@@ -12,25 +12,25 @@
           <div class="user-info"></div>
           <h2 style="color: darkgray;margin-top: 40px;text-align:center;">Select Your Cloud Service Provider</h2>
           <el-col :span="6" style="margin-top: 60px">
-            <el-card shadow="hover" @click.native="step1">
+            <el-card shadow="hover" @click.native="step2">
               <img src="../image/aws.png"
               :style="{'background-repete':'no-repete','background-size':'cover','background-position':'center',width:'100%',height:'100%' }">
             </el-card>
           </el-col>
           <el-col :span="6" style="margin-top: 60px">
-            <el-card shadow="hover" @click.native="step12">
+            <el-card shadow="hover" @click.native="step2">
               <img src="../image/Azure.png"
               :style="{'background-repete':'no-repete','background-size':'cover','background-position':'center',width:'100%',height:'100%' }">
             </el-card>
           </el-col>
           <el-col :span="6" style="margin-top: 60px">
-            <el-card shadow="hover">
+            <el-card shadow="hover" @click.native="step2">
               <img src="../image/GoogleCloud.png"
               :style="{'background-repete':'no-repete','background-size':'cover','background-position':'center',width:'100%',height:'100%' }">
             </el-card>
           </el-col>
           <el-col :span="6" style="margin-top: 60px">
-            <el-card shadow="hover">
+            <el-card shadow="hover" @click.native="step2">
               <img src="../image/ali.png"
               :style="{'background-repete':'no-repete','background-size':'cover','background-position':'center',width:'100%',height:'100%' }">
             </el-card>
@@ -75,7 +75,7 @@ import store from '@/utils/store'
       window.open(href, "_blank");
     },
     
-    step1(){
+    step2(){
       //跳转到上一次的页面
       //this.$router.go(-1)
       
@@ -86,7 +86,7 @@ import store from '@/utils/store'
       //this.$router.replace({name:'Cloud_Credentials/add/step1'})
  
       //通过push进行跳转
-      this.$router.push({ path: "/Cloud_Credentials/add/step1" ,name:"step1"});
+      this.$router.push({ path: "/Cloud_Credentials/add/step2" ,name:"step2"});
       //this.$router.push({name:'/learn'})
     }
     },

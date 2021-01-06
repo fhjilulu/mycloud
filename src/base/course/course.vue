@@ -3,6 +3,7 @@
     <div class="base-container">
       <div class="form-container">
         <div class="searchForm-container">
+          <!--
           <el-form inline ref="searchForm" :model="searchForm" size="small">
             <el-form-item label="课程名">
               <el-input v-model="searchForm.name" placeholder="请输入课程名" class="input"></el-input>
@@ -57,6 +58,8 @@
         <div class="add-button-container">
           <el-button class="button" size="small" type="myPrimary" @click="addClick()">添加课程</el-button>
         </div>
+        -->
+
         <div class="table-container">
           <el-table :data="tableData" style="width: 100%" size="small" :header-cell-style="{backgroundColor:'#ECF6FF'}">
             <el-table-column fixed align="center" prop="name" label="课程名" min-width="40px"></el-table-column>
@@ -84,8 +87,12 @@
               </template>
             </el-table-column>
           </el-table>
+
           <pagination @pagination="getData()" :pageIndex.sync="page" :size.sync="searchForm.size" :total="total"></pagination>
         </div>
+
+
+        
         <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" top="10vh" :close-on-click-modal="false" width="500px">
           <el-form :model="form" ref="form" :rules="rules" label-width="110px" size="small">
             <el-form-item label="课程名：" prop="name">

@@ -4,7 +4,7 @@
       <div class="user-container">
       <div class="base-container">
       <div class="form-container">
-     <br/><br/>
+        <br/>
     <el-row :gutter="20">
       <el-col :span="14">
           <div class="user-info-list">
@@ -40,6 +40,48 @@
       </el-col>
 
     </el-row>
+    <br/>
+   <el-table
+      :data="userChannels"
+      style="width: 100%" stripe>
+      <el-table-column label="#" type="index"></el-table-column>
+      <el-table-column
+        prop="id"
+        label="id"
+        width="80">
+      </el-table-column>
+
+      <el-table-column
+        prop="org_id"
+        label="org_id"
+        width="140">
+      </el-table-column>
+
+      <el-table-column
+        prop="channel_name"
+        label="channel_name"
+        width="140">
+      </el-table-column>
+
+      <el-table-column
+        prop="channel_account"
+        label="channel_account"
+        width="160">
+      </el-table-column>
+
+      <el-table-column
+        prop="channel_access_key"
+        label="channel_access_key"
+        width="220">
+      </el-table-column>
+
+      <el-table-column
+        prop="channel_access_secret"
+        label="channel_access_secret"
+        width="220">
+      </el-table-column>
+
+      </el-table>
 
     </div>
     </div>
@@ -50,12 +92,22 @@
 
 <script>
 /* 从菜单复制来的 加入路由跳转   */
+import { myGet,myPost,login } from "@/api/http";
 import store from '@/utils/store'
 
   export default {
     data() {
       return {
-
+      queryInfo: {
+        sessionId: '123',
+        version: '1.0',
+        osVersion: 'win8',
+        parameter: {
+          typeName: 'providerAction.list',
+          userId: '234'
+        }
+      },
+      userChannels: [],
       formData: {
         Team: undefined,
         Provider: undefined,
@@ -89,13 +141,16 @@ import store from '@/utils/store'
       }
     },
     created() {
-      this.role = JSON.parse(sessionStorage.getItem('accountInfo')).role
+       this.getUserList()
     },
     methods: {
     goTarget(href) {
       window.open(href, "_blank");
     },
-    
+    async getUserList () {
+      const { data: res } = await myPost('/providerAction/list', this.queryInfo)
+      this.userChannels = res.result.userChannels
+    },
     gotolink(){
       this.$router.push("/Cloud_Credentials/add/step1");
       //this.$router.push({ path: "/Cloud_Credentials/add/step1" ,name:"step1"});

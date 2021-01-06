@@ -1,197 +1,196 @@
 <template>
-  <div>
+    <div>
       <div class="user-container">
       <div class="base-container">
       <div class="form-container">
+      <el-card>
         <el-row>
-            <el-col :span="4">
-                <h1 class="pmc-scheduling-main-slide__header-title">Scheduling</h1>
-            </el-col>
-            <el-col :span="4" :offset="10">
-                <el-button type="primary" size="medium">Copy Schedule</el-button>
-            </el-col>
-            <el-col :span="4">
-                <el-button type="primary" size="medium">Add Schedule</el-button>
+            <el-col :span="4" :offset="20">
+                <el-button type="primary" @click="addDialogVisible = true">云厂商授权添加</el-button>
             </el-col>
         </el-row>
+           <!-- 导航 -->
+        <el-table
+      :data="userChannels"
+      style="width: 100%" stripe>
+      <el-table-column label="#" type="index"></el-table-column>
+      <el-table-column
+        prop="id"
+        label="id"
+        width="80">
+      </el-table-column>
 
-        <el-row>
-            <el-col :span="8" :offset="16">
-                <el-input placeholder="请输入内容" v-model="input5" class="input-with-select">
-                  <el-select v-model="select" slot="prepend" placeholder="请选择">
-                    <el-option label="餐厅名" value="1"></el-option>
-                    <el-option label="订单号" value="2"></el-option>
-                    <el-option label="用户电话" value="3"></el-option>
-                  </el-select>
-                  <el-button slot="append" icon="el-icon-search"></el-button>
-                </el-input>
-            </el-col>
-        </el-row>
-        <!-- 卡片视图 -->
-        <el-card>
-        </el-card> 
+      <el-table-column
+        prop="org_id"
+        label="org_id"
+        width="140">
+      </el-table-column>
 
+      <el-table-column
+        prop="channel_name"
+        label="channel_name"
+        width="140">
+      </el-table-column>
+
+      <el-table-column
+        prop="channel_account"
+        label="channel_account"
+        width="160">
+      </el-table-column>
+
+      <el-table-column
+        prop="channel_access_key"
+        label="channel_access_key"
+        width="220">
+      </el-table-column>
+
+      <el-table-column
+        prop="channel_access_secret"
+        label="channel_access_secret"
+        width="220">
+      </el-table-column>
+
+      </el-table>
+      </el-card>
+
+    <el-dialog
+  title="云厂商授权添加"
+  :visible.sync="addDialogVisible"
+  width="50%"
+  @close="addDialogClosed">
+
+  <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+  <el-form-item label="channel_name" prop="channel_name">
+    <el-input v-model="ruleForm.channel_name"></el-input>
+  </el-form-item>
+  <el-form-item label="channel_account" prop="channel_account">
+    <el-input v-model="ruleForm.channel_account"></el-input>
+  </el-form-item>
+  <el-form-item label="channel_access_key" prop="channel_access_key">
+    <el-input v-model="ruleForm.channel_access_key"></el-input>
+  </el-form-item>
+  <el-form-item label="channel_access_secret" prop="channel_access_secret">
+    <el-input v-model="ruleForm.channel_access_secret"></el-input>
+  </el-form-item>
+  </el-form>
+
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="addDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="addForms">确 定</el-button>
+  </span>
+</el-dialog>
+    </div>
+    
     </div>
     </div>
-  </div>
-
   </div>
 </template>
 
 <script>
-/* 从菜单复制来的 加入路由跳转   */
-import store from '@/utils/store'
-
-  export default {
-    data() {
-      return {
-        state: store.state,
-        isCollapse: false,
-        role: null
-      }
-    },
-    created() {
-      this.role = JSON.parse(sessionStorage.getItem('accountInfo')).role
-    },
-    methods: {
-    goTarget(href) {
-      window.open(href, "_blank");
-    },
-    
-    step1(){
-      //跳转到上一次的页面
-      //this.$router.go(-1)
-      
-      //指定跳转的地址
-      //this.$router.replace('Cloud_Credentials/add/step1')
- 
-      //指定跳转路由的名字下
-      //this.$router.replace({name:'Cloud_Credentials/add/step1'})
- 
-      //通过push进行跳转
-      this.$router.push({ path: "/Cloud_Credentials/add/step1" ,name:"step1"});
-      //this.$router.push({name:'/learn'})
+import { myGet,myPost,login } from "@/api/http";
+export default {
+  data () {
+    return {
+      // 获取用户列表的参数对象
+      queryInfo: {
+        sessionId: '123',
+        version: '1.0',
+        osVersion: 'win8',
+        parameter: {
+          typeName: 'providerAction.list',
+          userId: '234'
+        }
+      },
+      userChannels: [],
+      addDialogVisible: false,
+      ruleForm: {
+        channel_name: '',
+        channel_account: '',
+        channel_access_key: '',
+        channel_access_secret: ''
+      },
+      // 添加表单的验证规则对象
+      rules: {
+        channel_name: [
+          { requored: true, message: '请输入channel_name', trigger: 'blur' }
+        ],
+        channel_account: [
+          { requored: true, message: '请输入channel_account', trigger: 'blur' }
+        ],
+        channel_access_key: [
+          { requored: true, message: '请输入channel_access_key', trigger: 'blur' }
+        ],
+        channel_access_secret: [
+          { requored: true, message: '请输入channel_access_secret', trigger: 'blur' }
+        ]
+      },
+      loading: true
     }
+  },
+  created () {
+    this.getUserList()
+  },
+  methods: {
+    async getUserList () {
+      const { data: res } = await myPost('/providerAction/list', this.queryInfo)
+      this.userChannels = res.result.userChannels
     },
+    addDialogClosed () {
+      this.$refs.addFormRef.resetFields()
+    },
+    addForms () {
+      this.$refs.addFormRef.validate(valid => {
+        console.log(valid)
+      })
+    }
   }
+}
+
 </script>
 
-
 <style scoped>
-.el-row {
-  margin-bottom: 20px;
+.pmc-scheduling-main-slide__header-title {
+    font-family: MonserratR,Arial,Helvetica,sans-serif;
+    font-size: 24px;
+    line-height: 26px;
+    color: #1275b8;
+}
+
+.input-with-select{
+    background-color: #fff;
+}
+
+.bg-purple {
+    background: #fff;
 }
 
 .grid-content {
-  display: flex;
-  align-items: center;
-  height: 100px;
+    border-radius: 4px;
+    min-height: 36px;
 }
 
-.grid-cont-right {
-  flex: 1;
-  text-align: center;
-  font-size: 14px;
-  color: #999;
+.sub-menu {
+  height: 10px;
+  line-height: 10px;
+  font-size: 20px;
+  width: 140px;
+  font-size: 10px;
 }
 
-.grid-num {
-  font-size: 30px;
-  font-weight: bold;
+.line{
+   width: 100%;
+   height: 2px;
+   background-color:#222c32;
 }
 
-.grid-con-icon {
-  font-size: 50px;
-  width: 100px;
-  height: 100px;
-  text-align: center;
-  line-height: 100px;
-  color: #fff;
+.el-menu--horizontal > .el-menu-item {
+  border-bottom: none;
+  background-color: #fff;
+  height: 30px;
+  line-height: 30px;
 }
-
-.grid-con-1 .grid-con-icon {
-  background: rgb(45, 140, 240);
+.el-menu--horizontal > .el-menu-item.is-active {
+  border-bottom: none;
+  background-color: #fff !important;
 }
-
-.grid-con-1 .grid-num {
-  color: rgb(45, 140, 240);
-}
-
-.grid-con-2 .grid-con-icon {
-  background: rgb(100, 213, 114);
-}
-
-.grid-con-2 .grid-num {
-  color: rgb(45, 140, 240);
-}
-
-.grid-con-3 .grid-con-icon {
-  background: rgb(242, 94, 67);
-}
-
-.grid-con-3 .grid-num {
-  color: rgb(242, 94, 67);
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #ccc;
-  margin-bottom: 20px;
-}
-
-.user-avator {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-}
-
-.user-info-cont {
-  padding-left: 50px;
-  flex: 1;
-  font-size: 14px;
-  color: #999;
-}
-
-.user-info-cont div:first-child {
-  font-size: 30px;
-  color: #222;
-}
-
-.user-info-list {
-  font-size: 14px;
-  color: #999;
-  line-height: 25px;
-}
-
-.user-info-list span {
-  margin-left: 70px;
-}
-
-.mgb20 {
-  margin-top: 0px;
-  margin-bottom: 0px;
-  height: 100%;
-  width: 100%;
-}
-
-.todo-item {
-  font-size: 14px;
-}
-
-.todo-item-del {
-  text-decoration: line-through;
-  color: #999;
-}
-
-.schart {
-  width: 100%;
-  height: 300px;
-}
-
-a {
-    text-decoration: none;
-    color: #0072bc;
-    }
 </style>
