@@ -58,13 +58,21 @@ export default {
             // 1.登录成功后 服务端返回的token保存到sessionStorace中
             window.sessionStorage.setItem('token', res.date);
             sessionStorage.setItem('isLogin',true); 
+            sessionStorage.setItem('userId', formName.userName)
             // 1.1项目中除了登录之外的其他api接口，必须在登录之后才能访问
             // 1.2token只应在当前网站的打开期间有效，所以将token存储在sessionStorace中
             // 2.通过编程式导航跳转到后台主页，路由地址/home
             this.$router.push('/Resources');
-          } else {
-            this.$message.error('登录失败')
-          }
+          } 
+          //else {
+          //  this.$message.error('登录失败')
+          //}
+           else {
+              this.$alert(res.data.errorMsg,'警告',{
+                confirmButtonClass: "el-button--myPrimary",
+                type: "warning"
+              })
+            }
           })
         }
       }) 

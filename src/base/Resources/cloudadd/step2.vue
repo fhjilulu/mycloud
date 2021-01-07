@@ -10,23 +10,38 @@
             <h2 style="color: darkblue">Add Credentials</h2>
           </div>
           <div class="user-info"></div>
-     
-<el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
-  <el-form-item label="channel_name" prop="channel_name" label-width="100px"><br/>
-    <el-input v-model="ruleForm.channel_name" ></el-input>
-  </el-form-item>
-  <el-form-item label="channel_account" prop="channel_account" label-width="100px"><br/>
-    <el-input v-model="ruleForm.channel_account"></el-input>
-  </el-form-item>
-  <el-form-item label="channel_access_key" prop="channel_access_key" label-width="100px"><br/>
-    <el-input v-model="ruleForm.channel_access_key"></el-input>
-  </el-form-item>
-  <el-form-item label="channel_access_secret" prop="channel_access_secret" label-width="100px"><br/>
-    <el-input v-model="ruleForm.channel_access_secret"></el-input>
-  </el-form-item>
-  </el-form> 
+       </el-col>
+    </el-row>
 
+<el-row :gutter="20">
+  <el-col>
+  <el-col :span="3" > <br/> </el-col>
+      <el-col :span="12" >
+<el-form :model="ruleForm.parameter" :rules="rules" ref="ruleForm" style="width:100%;" class="demo-ruleForm">
+  <el-form-item label="channel_name" prop="channelName" label-width="100px"><br/>
+    <el-input v-model="ruleForm.parameter.channelName" ></el-input>
+  </el-form-item>
+  <el-form-item label="channel_account" prop="channelAccount" label-width="100px"><br/>
+    <el-input v-model="ruleForm.parameter.channelAccount"></el-input>
+  </el-form-item>
+  <el-form-item label="channel_access_key" prop="channelAccessKey" label-width="100px"><br/>
+    <el-input v-model="ruleForm.parameter.channelAccessKey"></el-input>
+  </el-form-item>
+  <el-form-item label="channel_access_secret" prop="channelAccessSecret" label-width="100px"><br/>
+    <el-input v-model="ruleForm.parameter.channelAccessSecret"></el-input>
+  </el-form-item>
+  </el-form> </el-col>
+  <el-col :span="2" > <br/> </el-col>
+    <el-col :span="7" ><br/><br/>
+      <el-button type="primary" size="medium" @click="testAdd('ruleForm')">Test</el-button><br/><br/><br/><br/>
+      <el-button type="primary" size="medium" @click="gotolink">Back</el-button><br/><br/><br/><br/>
+      <el-button :disabled="isAble" type="primary" size="medium" @click="submitAdd('ruleForm')">Finish</el-button>
+      </el-col></el-col></el-row>
+
+    <el-row :gutter="20">
+      <el-col>
           <el-col :span="24" style="text-align:center">
+            测试结果：{{testresult}}<br/><br/>
              Need help?
              <a class="need-help-section__link" href="http://www.baidu.com" data-ng-click="ctrl.inviteAdminClicked()" translate-once="INVITE_YOUR_CLOUD_ADMIN">Invite your cloud admin</a>
              or
@@ -45,46 +60,94 @@
 
 <script>
 /* 从菜单复制来的 加入路由跳转   */
+import { myGet,myPost,login } from "@/api/http";
 import store from '@/utils/store'
 
   export default {
     data() {
       return {
-        state: store.state,
-        isCollapse: false,
-        role: null,
+        testresult:'还未测试',
         ruleForm: {
-        channel_name: '',
-        channel_account: '',
-        channel_access_key: '',
-        channel_access_secret: ''
-      },
+          sessionId: '123',
+          version: '1.0',
+          osVersion: 'win8',
+          parameter: {
+            typeName: 'providerAction.input',
+            channelName: '',
+            channelAccount: '',
+            channelAccessKey: '',
+            channelAccessSecret: ''
+          }
+        },
       // 添加表单的验证规则对象
       rules: {
-        channel_name: [
-          { required: true, message: '请输入channel_name', trigger: 'blur' }
+        channelName: [
+          { required: true, message: '请输入channelName', trigger: 'blur' }
         ],
-        channel_account: [
-          { required: true, message: '请输入channel_account', trigger: 'blur' }
+        channelAccessKey: [
+          { required: true, message: '请输入channelAccessKey', trigger: 'blur' }
         ],
-        channel_access_key: [
-          { required: true, message: '请输入channel_access_key', trigger: 'blur' }
-        ],
-        channel_access_secret: [
-          { required: true, message: '请输入channel_access_secret', trigger: 'blur' }
+        channelAccessSecret: [
+          { required: true, message: '请输入channelAccessSecret', trigger: 'blur' }
         ]
       },
       }
     },
+    
     created() {
-      this.role = JSON.parse(sessionStorage.getItem('accountInfo')).role
+      this.isAble = true;
     },
+    
     methods: {
     goTarget(href) {
       window.open(href, "_blank");
     },
-    
-    step2(){
+    submitAdd(formName) {
+      this.$refs[formName].validate((valid) => {
+        if(valid) {
+          myPost("/providerAction/input",this.ruleForm ).then(res =>{
+            if (res.data.errorCode === '0000') {
+            this.$message.success('添加成功')}
+            else{
+            this.$alert(res.data.errorMsg,'警告',{
+                confirmButtonClass: "el-button--myPrimary",
+                type: "warning"
+              })}
+        })
+        }})},
+    testAdd(formName) {
+      this.$refs[formName].validate((valid) => {
+        if(valid) {
+          myPost("/providerAction/test", 
+          {
+          sessionId: '123',
+          version: '1.0',
+          osVersion: 'win8',
+          parameter: {
+            typeName: 'providerAction.test',
+            channelName: this.ruleForm.parameter.channelName,
+            channelAccessKey: this.ruleForm.parameter.channelAccessKey,
+            channelAccessSecret:this.ruleForm.parameter.channelAccessSecret
+          }
+        })
+          .then(res => {
+            if (res.data.errorCode === '0000') {
+            this.$message.success('测试成功');this.testresult="测试成功";this.isAble = false;}
+            else if (res.data.errorCode === '2001'){
+            this.$message.success('channelName不能为空');this.testresult="channelName不能为空";this.isAble = true;}
+            else if (res.data.errorCode === '2003'){
+            this.$message.success('渠道AccessKey不能为空');this.testresult="渠道AccessKey不能为空";this.isAble = true;}
+            else if (res.data.errorCode === '2004'){
+            this.$message.success('渠道AccessSecret不能为空');this.testresult="渠道AccessSecret不能为空";this.isAble = true;}
+            else if (res.data.errorCode === '2005'){
+            this.$message.success('不支持的云厂商');this.testresult="不支持的云厂商";this.isAble = true;}
+            else if (res.data.errorCode === '2008'){
+            this.$message.success('请检查渠道AccessKey或AccessSecret是否正确');this.testresult="请检查渠道AccessKey或AccessSecret是否正确";this.isAble = true;};
+          });
+        }
+      }) 
+    },
+    gotolink(){
       //跳转到上一次的页面
       //this.$router.go(-1)
       
@@ -95,7 +158,7 @@ import store from '@/utils/store'
       //this.$router.replace({name:'Cloud_Credentials/add/step1'})
  
       //通过push进行跳转
-      this.$router.push({ path: "/Cloud_Credentials/add/step2" ,name:"step2"});
+      this.$router.push({ path: "/Cloud_Credentials/add/step1" ,name:"step1"});
       //this.$router.push({name:'/learn'})
     }
     },

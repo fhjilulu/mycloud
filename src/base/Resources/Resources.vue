@@ -102,7 +102,7 @@ export default {
         osVersion: 'win8',
         parameter: {
           typeName: 'instanceAction.list',
-          userId: '234',
+          userId: '',
           pageNo: '1',
           pageSize: '10'
         }
@@ -148,7 +148,8 @@ export default {
     }
   },
   created () {
-    this.getUserList()
+    this.getUserList();
+    this.queryInfo.userId = sessionStorage.getItem('userId'); 
   },
   methods: {
     async getUserList () {

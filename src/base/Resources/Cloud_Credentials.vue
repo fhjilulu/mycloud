@@ -6,17 +6,18 @@
       <div class="form-container">
         <br/>
     <el-row :gutter="20">
-      <el-col :span="14">
+      <el-col :span="19">
           <div class="user-info-list">
             <h2 style="color: darkblue">Cloud Credentials</h2>
           </div>
       </el-col>
-      <el-col :span="4" >
+      <el-col :span="5" >
           <el-button type="primary" size="medium" @click="gotolink">Add Cloud Credentials</el-button>
       </el-col>
+      <!--
       <el-col :span="6">
           <el-select  v-model="formData.Provider" placeholder="Filter" clearable :style="{width: '100%'}">
-            <el-form  ref="filter" :model="formData" :rules="rules" size="mini" label-width="100px">
+            <el-form  ref="filter" :model="formData" size="mini" label-width="100px">
             <el-form-item label="Team" prop="Team">
                 <el-input v-model="formData.Team" clearable :style="{width: '90%'}"></el-input>
             </el-form-item>
@@ -37,7 +38,7 @@
            </el-option>
          </el-form>
      </el-select>
-      </el-col>
+      </el-col>-->
 
     </el-row>
     <br/>
@@ -81,7 +82,38 @@
         width="220">
       </el-table-column>
 
+      <el-table-column align="center" label="操作" fixed="right" min-width="100px">
+              <template slot-scope="scope">
+                <el-button type="text" size="mini" class="color-green" @click="editClick(scope.row)">编辑</el-button>
+                <el-button type="text" size="mini" class="color-red" @click="deleteClick(scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+
       </el-table>
+
+        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" top="10vh" :close-on-click-modal="false" width="500px">
+          <el-form :model="editInfo.parameter" ref="editInfo" style="width:100%;" >
+            <el-form-item label="channel_id" prop="channelId" label-width="100px"><br/>
+              <el-input v-model="editInfo.parameter.channelId" ></el-input>
+           </el-form-item>
+           <el-form-item label="channel_name" prop="channelName" label-width="100px"><br/>
+              <el-input v-model="editInfo.parameter.channelName" ></el-input>
+           </el-form-item>
+           <el-form-item label="channel_account" prop="channelAccount" label-width="100px"><br/>
+            <el-input v-model="editInfo.parameter.channelAccount"></el-input>
+            </el-form-item>
+          <el-form-item label="channel_access_key" prop="channelAccessKey" label-width="100px"><br/>
+              <el-input v-model="editInfo.parameter.channelAccessKey"></el-input>
+          </el-form-item>
+           <el-form-item label="channel_access_secret" prop="channelAccessSecret" label-width="100px"><br/>
+             <el-input v-model="editInfo.parameter.channelAccessSecret"></el-input>
+          </el-form-item>
+            </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button size="small" type="myPrimary" @click="submitEdit('editInfo')">确定</el-button>
+            <el-button size="small" type="myCancel" @click="dialogVisible = false">取消</el-button>
+          </div>
+        </el-dialog>
 
     </div>
     </div>
@@ -98,6 +130,19 @@ import store from '@/utils/store'
   export default {
     data() {
       return {
+      editInfo: {
+          sessionId: '123',
+          version: '1.0',
+          osVersion: 'win8',
+          parameter: {
+            typeName: 'providerAction.update',
+            channelId: '',
+            channelName: '',
+            channelAccount: '',
+            channelAccessKey: '',
+            channelAccessSecret: ''
+          }
+        },
       queryInfo: {
         sessionId: '123',
         version: '1.0',
@@ -107,16 +152,22 @@ import store from '@/utils/store'
           userId: '234'
         }
       },
+      deleteInfo: {
+        sessionId: '123',
+        version: '1.0',
+        osVersion: 'win8',
+        parameter: {
+          typeName: 'providerAction.delete',
+          channelId: "2"
+       }
+      },
       userChannels: [],
+      dialogTitle: "",
+      dialogVisible: false,
       formData: {
         Team: undefined,
         Provider: undefined,
         Name: undefined,
-      },
-      rules: {
-        Team: [],
-        Provider: [],
-        Name: [],
       },
       ProviderOptions: [{
         "label": "Select",
@@ -154,8 +205,57 @@ import store from '@/utils/store'
     gotolink(){
       this.$router.push("/Cloud_Credentials/add/step1");
       //this.$router.push({ path: "/Cloud_Credentials/add/step1" ,name:"step1"});
-    }
     },
+    editClick(row) {
+      this.editInfo.parameter.channelId=row.id
+      this.editInfo.parameter.channelName=row.channel_name
+      this.editInfo.parameter.channelAccount=row.channel_account
+      this.editInfo.parameter.channelAccessKey=row.channel_access_key
+      this.editInfo.parameter.channelAccessSecret=row.channel_access_secret
+      this.dialogTitle = "编辑云渠道";
+      this.dialogVisible = true;        
+      
+    },
+    submitEdit(formName) {
+      this.$refs[formName].validate((valid) => {
+        if(valid) {
+          myPost("/providerAction/update" , this.editInfo).then(res =>{
+            if (res.data.errorCode === '0000') {
+            this.$message.success('编辑成功')}
+            else{
+            this.$alert(res.data.errorMsg,'警告',{
+                confirmButtonClass: "el-button--myPrimary",
+                type: "warning"
+              })}
+        })
+        }
+      })
+    },
+    deleteClick(row){
+      this.$confirm("确定要删除该云渠道么?", "提示", {
+        confirmButtonClass: "el-button--myPrimary",
+        type: "warning"
+      })
+      .then(() => {
+         myPost("/providerAction/delete" , this.deleteInfo).then(res =>{
+            if (res.data.errorCode === '0000') {
+            this.$message.success('删除成功')}
+            else{
+            this.$alert(res.data.errorMsg,'警告',{
+                confirmButtonClass: "el-button--myPrimary",
+                type: "warning"
+              })}
+        })
+      })
+      .catch(() => {
+        this.$message({
+          type: "info",
+          message: "已取消删除"
+        });
+      });
+    },
+    },
+
   }
 </script>
 
