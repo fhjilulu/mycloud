@@ -19,7 +19,7 @@
       <el-col :span="12" >
 <el-form :model="ruleForm.parameter" :rules="rules" ref="ruleForm" style="width:100%;" class="demo-ruleForm">
   <el-form-item label="channel_name" prop="channelName" label-width="100px"><br/>
-    <el-input v-model="ruleForm.parameter.channelName" ></el-input>
+    <el-input v-model="ruleForm.parameter.channelName" :disabled="true"></el-input>
   </el-form-item>
   <el-form-item label="channel_account" prop="channelAccount" label-width="100px"><br/>
     <el-input v-model="ruleForm.parameter.channelAccount"></el-input>
@@ -73,7 +73,7 @@ import store from '@/utils/store'
           osVersion: 'win8',
           parameter: {
             typeName: 'providerAction.input',
-            channelName: 'ALIYUN',
+            channelName: 'TENCENTCLOUD',
             channelAccount: '',
             channelAccessKey: '',
             channelAccessSecret: ''
@@ -96,7 +96,7 @@ import store from '@/utils/store'
     
     created() {
       this.isAble = true;
-      this.ruleForm.parameter.channelName = "ALIYUN";
+      this.ruleForm.parameter.channelName = "TENCENTCLOUD";
     },
     
     methods: {
@@ -134,13 +134,18 @@ import store from '@/utils/store'
           .then(res => {
             if (res.data.errorCode === '0000') {
             this.$message.success('测试成功');this.testresult="测试成功";this.isAble = false;}
-            else{
-            this.$alert(res.data.errorMsg,'警告',{
-                confirmButtonClass: "el-button--myPrimary",
-                type: "warning"
-              })}
-        })
-      }
+            else if (res.data.errorCode === '2001'){
+            this.$message.success('channelName不能为空');this.testresult="channelName不能为空";this.isAble = true;}
+            else if (res.data.errorCode === '2003'){
+            this.$message.success('渠道AccessKey不能为空');this.testresult="渠道AccessKey不能为空";this.isAble = true;}
+            else if (res.data.errorCode === '2004'){
+            this.$message.success('渠道AccessSecret不能为空');this.testresult="渠道AccessSecret不能为空";this.isAble = true;}
+            else if (res.data.errorCode === '2005'){
+            this.$message.success('不支持的云厂商');this.testresult="不支持的云厂商";this.isAble = true;}
+            else if (res.data.errorCode === '2008'){
+            this.$message.success('请检查渠道AccessKey或AccessSecret是否正确');this.testresult="请检查渠道AccessKey或AccessSecret是否正确";this.isAble = true;};
+          });
+        }
       }) 
     },
     gotolink(){
@@ -154,7 +159,7 @@ import store from '@/utils/store'
       //this.$router.replace({name:'Cloud_Credentials/add/step1'})
  
       //通过push进行跳转
-      this.$router.push({ path: "/Cloud_Credentials/add/step1" ,name:"step1"});
+      this.$router.push({ path: "/Cloud_Credentials/add" ,name:"step1"});
       //this.$router.push({name:'/learn'})
     }
     },

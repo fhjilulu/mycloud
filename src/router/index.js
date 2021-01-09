@@ -36,23 +36,38 @@ const router =  new Router({
         },
         {
           path: 'Cloud_Credentials',
-          meta: { title: 'Cloud Credentials', require: true },
+          meta: { title: 'Cloud_Credentials', require: true },
           component: () => import('@/base/Resources/Cloud_Credentials'),
         },
         {
-            path: '/Cloud_Credentials/add/step1',name:"step1",
-            meta: { title: 'Cloud_Credentials/add/step1', require: true },
+          path: 'Edit_Credentials',name:"step2",
+          meta: { title: 'Edit_Credentials', require: true },
+          component: () => import('@/base/Resources/cloudadd/Edit_Credentials'),
+        },
+        {
+            path: '/Cloud_Credentials/add',name:"step1",
+            meta: { title: 'Cloud_Credentials/add', require: true },
             component: () => import('@/base/Resources/cloudadd/step1')     
         },
         {
-            path: '/Cloud_Credentials/add/step1-2',name:"step1-2",
-            meta: { title: 'Cloud_Credentials/add/step1-2', require: false },
-            component: () => import('@/base/Resources/cloudadd/step1-2')            
+            path: '/Cloud_Credentials/add/ali',name:"ali",
+            meta: { title: '/Cloud_Credentials/add/ali', require: true },
+            component: () => import('@/base/Resources/cloudadd/ali')            
         },
         {
-            path: '/Cloud_Credentials/add/step2',name:"step2",
-            meta: { title: 'Cloud_Credentials/add/step2', require: true },
-            component: () => import('@/base/Resources/cloudadd/step2')            
+           path: '/Cloud_Credentials/add/tengxun',name:"tengxun",
+           meta: { title: '/Cloud_Credentials/add/tengxun', require: true },
+           component: () => import('@/base/Resources/cloudadd/tengxun')            
+        },
+        {
+           path: '/Cloud_Credentials/add/aws',name:"aws",
+           meta: { title: '/Cloud_Credentials/add/aws', require: true },
+           component: () => import('@/base/Resources/cloudadd/aws')            
+        },
+        {
+           path: '/Cloud_Credentials/add/huawei',name:"huawei",
+           meta: { title: '/Cloud_Credentials/add/huawei', require: true },
+           component: () => import('@/base/Resources/cloudadd/huawei')            
         },
         {
           path: 'Teams',

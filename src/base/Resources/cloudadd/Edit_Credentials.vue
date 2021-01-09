@@ -6,92 +6,12 @@
       <div class="form-container">
         <br/>
     <el-row :gutter="20">
-      <el-col :span="19">
           <div class="user-info-list">
-            <h2 style="color: darkblue">Cloud Credentials</h2>
+            <h2 style="color: darkblue">Edit Credentials</h2>
           </div>
-      </el-col>
-      <el-col :span="5" >
-          <el-button type="primary" size="medium" @click="gotolink">Add Cloud Credentials</el-button>
-      </el-col>
-      <!--
-      <el-col :span="6">
-          <el-select  v-model="formData.Provider" placeholder="Filter" clearable :style="{width: '100%'}">
-            <el-form  ref="filter" :model="formData" size="mini" label-width="100px">
-            <el-form-item label="Team" prop="Team">
-                <el-input v-model="formData.Team" clearable :style="{width: '90%'}"></el-input>
-            </el-form-item>
-            <el-form-item label="Provider" prop="Provider">
-                <el-select v-model="formData.Provider" placeholder="Select" clearable :style="{width: '90%'}">
-                  <el-option v-for="(item, index) in ProviderOptions" :key="index" :label="item.label"
-                  :value="item.value" :disabled="item.disabled"></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="Name" prop="Name">
-                <el-input v-model="formData.Name" clearable :style="{width: '90%'}"></el-input>
-            </el-form-item>
-           <el-option>
-           <el-form-item size="large">
-             <el-button type="primary" @click="submitForm">Search</el-button>
-             <el-button type="text" icon="el-icon-close" @click="resetForm">Close</el-button>
-           </el-form-item>
-           </el-option>
-         </el-form>
-     </el-select>
-      </el-col>-->
-
     </el-row>
     <br/>
-   <el-table
-      :data="userChannels"
-      style="width: 100%" stripe>
-      <el-table-column label="#" type="index"></el-table-column>
-      <el-table-column
-        prop="id"
-        label="id"
-        width="80">
-      </el-table-column>
-
-      <el-table-column
-        prop="org_id"
-        label="org_id"
-        width="140">
-      </el-table-column>
-
-      <el-table-column
-        prop="channel_name"
-        label="channel_name"
-        width="140">
-      </el-table-column>
-
-      <el-table-column
-        prop="channel_account"
-        label="channel_account"
-        width="160">
-      </el-table-column>
-
-      <el-table-column
-        prop="channel_access_key"
-        label="channel_access_key"
-        width="220">
-      </el-table-column>
-
-      <el-table-column
-        prop="channel_access_secret"
-        label="channel_access_secret"
-        width="220">
-      </el-table-column>
-
-      <el-table-column align="center" label="操作" fixed="right" min-width="100px">
-              <template slot-scope="scope">
-                <el-button type="text" size="mini" class="color-green" @click="editClick(scope.row)">修改</el-button>
-                <el-button type="text" size="mini" class="color-red" @click="deleteClick(scope.row)">删除</el-button>
-              </template>
-            </el-table-column>
-
-      </el-table>
-
-        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" top="10vh" :close-on-click-modal="false" width="500px">
+  
           <el-form :model="editInfo.parameter" ref="editInfo" style="width:100%;" >
             <el-form-item label="channel_id" prop="channelId" label-width="100px"><br/>
               <el-input v-model="editInfo.parameter.channelId" ></el-input>
@@ -110,11 +30,10 @@
           </el-form-item>
             </el-form>
           <div slot="footer" class="dialog-footer">
-            <!--<el-button size="small" type="myPrimary" @click="testAdd('editInfo')">Test</el-button>
-            --><el-button size="small" type="myPrimary" @click="submitEdit('editInfo')">确定</el-button>
+            <el-button size="small" type="myPrimary" @click="testAdd('editInfo')">Test</el-button>
+            <el-button size="small" type="myPrimary" @click="submitEdit('editInfo')" :disabled="isAble">确定</el-button>
             <el-button size="small" type="myCancel" @click="dialogVisible = false">取消</el-button>
           </div>
-        </el-dialog>
 
     </div>
     </div>

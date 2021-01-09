@@ -8,6 +8,7 @@
         <svg-icon icon-class="notice"></svg-icon>
         <span class="title-name">Resources</span>
       </el-menu-item>
+      <!--
       <el-menu-item index="/Scheduling">
         <svg-icon icon-class="culture"></svg-icon>
         <span class="title-name">Scheduling</span>
@@ -16,10 +17,12 @@
         <svg-icon icon-class="notice"></svg-icon>
         <span class="title-name">Rightsizing</span>
       </el-menu-item>
+      -->
       <el-menu-item index="/Cloud_Credentials">
         <svg-icon icon-class="cloud"></svg-icon>
         <span class="title-name">Cloud Credentials</span>
       </el-menu-item>
+      <!--
       <el-menu-item index="/Teams">
         <svg-icon icon-class="data"></svg-icon>
         <span class="title-name">Teams</span>
@@ -56,11 +59,8 @@
         <svg-icon icon-class="sysconfig"></svg-icon>
         <span class="title-name" >Api</span>
       </el-menu-item>
+      -->
     </el-menu>
-          <el-menu-item index="/Api">
-        <svg-icon icon-class="sysconfig"></svg-icon>
-        <span class="title-name" >Api</span>
-      </el-menu-item>
   </div>
 </template>
 

@@ -18,28 +18,28 @@
       :data="instanceList"
       style="width: 100%">
 
-      <el-table-column
+      <!--<el-table-column
         prop="id"
         label="id"
         width="50">
+      </el-table-column>-->
+
+      <el-table-column
+        prop="channelId"
+        label="channelId"
+        width="90">
       </el-table-column>
 
       <el-table-column
-        prop="channel_id"
-        label="channel_id"
-        width="100">
-      </el-table-column>
-
-      <el-table-column
-        prop="location"
-        label="location"
-        width="100">
+        prop="region"
+        label="region"
+        width="110">
       </el-table-column>
 
       <el-table-column
         prop="status"
         label="status"
-        width="100">
+        width="90">
         <template slot-scope="scope">
           <el-switch
           @change='statuschange($event, scope.row, startSingleInstance, stopSingleInstance)'
@@ -53,7 +53,7 @@
       <el-table-column
         prop="team"
         label="team"
-        width="100">
+        width="70">
       </el-table-column>
 
       <el-table-column
@@ -63,20 +63,44 @@
       </el-table-column>
 
       <el-table-column
-        prop="channel_name"
-        label="channel_name"
-        width="140">
+        prop="channelInstanceName"
+        label="channelInstanceName"
+        width="220">
       </el-table-column>
 
       <el-table-column
-        prop="channel_instance_id"
-        label="channel_instance_id"
-        width="230">
+        prop="channelInstanceId"
+        label="channelInstanceId"
+        width="220">
       </el-table-column>
 
       <el-table-column
-        prop="channel_cost"
-        label="channel_cost"
+        prop="vcpu"
+        label="vcpu"
+        width="60">
+      </el-table-column>
+        
+      <el-table-column
+        prop="memory"
+        label="memory"
+        width="90">
+      </el-table-column>
+
+      <el-table-column
+        prop="publicIpAddress"
+        label="publicIpAddress"
+        width="150">
+      </el-table-column>
+
+      <el-table-column
+        prop="privateIpAddress"
+        label="privateIpAddress"
+        width="150">
+      </el-table-column>
+
+      <el-table-column
+        prop="channelCost"
+        label="channelCost"
         width="140">
       </el-table-column>
       </el-table>
@@ -102,7 +126,7 @@ export default {
         osVersion: 'win8',
         parameter: {
           typeName: 'instanceAction.list',
-          userId: '',
+          userId: '234',
           pageNo: '1',
           pageSize: '10'
         }

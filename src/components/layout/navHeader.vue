@@ -105,8 +105,9 @@ export default {
   this.add()
 },
   components: {breadcrumb,hamberger,HelpDoc},
-  created(){
-    this.nickname = JSON.parse(sessionStorage.getItem('accountInfo')).nickname
+  created(){    
+    this.queryInfo.userId = sessionStorage.getItem('userId'); 
+    this.nickname = JSON.parse(sessionStorage.getItem('userId')).userId
   },
   methods:{
     handleClose(done) {
