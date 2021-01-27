@@ -39,7 +39,7 @@
       <el-table-column
         prop="status"
         label="status"
-        width="90">
+        width="100">
         <template slot-scope="scope">
           <el-switch
           @change='statuschange($event, scope.row, startSingleInstance, stopSingleInstance)'
@@ -53,7 +53,7 @@
       <el-table-column
         prop="team"
         label="team"
-        width="70">
+        width="90">
       </el-table-column>
 
       <el-table-column
@@ -68,7 +68,7 @@
         width="220">
       </el-table-column>
 
-      <el-table-column
+      <!--<el-table-column
         prop="channelInstanceId"
         label="channelInstanceId"
         width="220">
@@ -96,18 +96,109 @@
         prop="privateIpAddress"
         label="privateIpAddress"
         width="150">
-      </el-table-column>
+      </el-table-column>-->
 
       <el-table-column
         prop="channelCost"
         label="channelCost"
-        width="140">
+        width="120">
       </el-table-column>
+
+      <el-table-column align="center" label="tag" width="60">
+              <template slot-scope="scope">
+                <el-button type="text" size="mini" class="color-blue" @click="tag(scope.row)">tag</el-button>
+              </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="使用详情" width="80">
+              <template slot-scope="scope">
+                <el-button type="text" size="mini" icon="el-icon-tickets" @click="showuse(scope.row)"></el-button>
+              </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="资源详情" width="80">
+              <template slot-scope="scope">
+                <el-button type="text" size="mini" icon="el-icon-arrow-right" @click="showresource(scope.row)"></el-button>
+              </template>
+      </el-table-column>
+
       </el-table>
       </el-tab-pane>
+
+      <el-tab-pane label="计算实例">
+        <el-table
+            :data="instanceList"
+             style="width: 100%">
+        </el-table>
+      </el-tab-pane>
+
+      <el-tab-pane label="数据库">
+        <el-table
+            :data="instanceList"
+             style="width: 100%">
+        </el-table>
+      </el-tab-pane>
+
+      <el-tab-pane label="容器">
+        <el-table
+            :data="instanceList"
+             style="width: 100%">
+        </el-table>
+      </el-tab-pane>
+
+      <el-tab-pane label="伸缩组">
+        <el-table
+            :data="instanceList"
+             style="width: 100%">
+        </el-table>
+      </el-tab-pane>
+
+      <el-tab-pane label="逻辑组">
+        <el-table
+            :data="instanceList"
+             style="width: 100%">
+        </el-table>
+      </el-tab-pane>
+
+      <el-tab-pane label="阿里云">
+        <el-table
+            :data="instanceList"
+             style="width: 100%">
+        </el-table>
+      </el-tab-pane>
+
+      <el-tab-pane label="AWS">
+        <el-table
+            :data="instanceList"
+             style="width: 100%">
+        </el-table>
+      </el-tab-pane>
+
+      <el-tab-pane label="华为云">
+        <el-table
+            :data="instanceList"
+             style="width: 100%">
+        </el-table>
+      </el-tab-pane>
+
     </el-tabs>
+    
+         <pagination @pagination="getData()" :pageIndex.sync="page" :size.sync="queryInfo.parameter.pageSize" :total="totalCount"></pagination>
     </div>
     
+       <el-dialog :title="dialogTitle" :visible.sync="dialogVisible"  width="500px">
+          <div><br/><h1>
+            <el-col :span="3" > <br/> </el-col>
+            <el-col :span="4" > Key </el-col></h1>
+            <el-col :span="17" > {{tagkey}} </el-col>
+            <br/><br/><br/><br/><h1>
+            <el-col :span="3" > <br/> </el-col>
+            <el-col :span="4" > Name </el-col></h1>
+            <el-col :span="17" > {{tagname}} </el-col>
+            <br/><br/>
+            </div>
+        </el-dialog>
+
     </div>
     </div>
   </div>
@@ -115,10 +206,12 @@
 </template>
 
 <script>
+import pagination from '@/components/pagination/pagination'
 import { myGet,myPost,login } from "@/api/http";
 export default {
   data () {
     return {
+      page: 1,
       // 获取用户列表的参数对象
       queryInfo: {
         sessionId: '123',
@@ -150,10 +243,13 @@ export default {
         }
       },
       instanceList: [],
+      tagname:"",
+      tagkey:"Value",
       totalCount: 0,
+      dialogTitle: "",
       scheduleList: [],
       // 控制添加用户对话框的显示与隐藏
-      addDialogVisible: false,
+      dialogVisible: false,
       // 添加用户的表单数据
       addForm: {
         Schedulename: '',
@@ -172,9 +268,11 @@ export default {
     }
   },
   created () {
-    this.getUserList();
+    //this.getUserList()
+    this.getData()
     this.queryInfo.userId = sessionStorage.getItem('userId'); 
   },
+  components: {pagination},
   methods: {
     async getUserList () {
       const { data: res } = await myPost('/instanceAction/list', this.queryInfo)
@@ -199,8 +297,51 @@ export default {
           return this.$message.error('更改失败')
         }
       }
-    }
-  }
+    },
+    async getData() {
+      this.queryInfo.parameter.pageNo = this.page 
+      const { data: res } = await myPost('/instanceAction/list',this.queryInfo)
+         this.instanceList = res.result.instanceList
+         this.totalCount = res.result.totalCount
+    },
+    tag(row) {
+      //this.instanceList.parameter.channelId=row.id
+      this.tagname=row.channelInstanceName
+      this.dialogTitle = "Instance Tags";
+      this.dialogVisible = true;        
+    },
+    /*showresource(row) {
+      //this.instanceList.parameter.channelId=row.id
+      this.tagname=row.channelInstanceName
+      this.dialogTitle = "Instance Tags";
+      this.dialogVisible = true;   
+    },*/
+    showuse(row) {
+      //this.instanceList.parameter.channelId=row.id
+      this.$router.push({
+       path: '/showuse'
+    })},
+    showresource: function(row){
+     this.$router.push({
+       path: '/showresource',
+     // name: 'mallList',
+      query: {
+        id:row.id,
+        region:row.region,
+        status:row.status,
+        team:row.team,
+        credential:row.credential,
+        channelInstanceId:row.channelInstanceId,
+        channelInstanceName:row.channelInstanceName,
+        vcpu:row.vcpu,
+        memory:row.memory,
+        publicIpAddress:row.publicIpAddress,
+        privateIpAddress:row.privateIpAddress,
+        channelCost:row.channelCost,
+     }
+    })
+   },
+  },
 }
 
 </script>

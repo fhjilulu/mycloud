@@ -115,6 +115,15 @@ const router =  new Router({
           meta: { title: 'Api', require: true },
           component: () => import('@/base/Resources/Api')
         },
+        {
+          path: 'showresource',name:"showresource",
+          meta: { title: 'showresource', require: true },
+          component: () => import('@/base/Resources/showresource'),
+        },        {
+          path: 'showuse',name:"showuse",
+          meta: { title: 'showuse', require: true },
+          component: () => import('@/base/Resources/showuse'),
+        },
       ]
     }
   ]

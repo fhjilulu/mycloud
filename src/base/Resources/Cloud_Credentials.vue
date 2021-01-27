@@ -49,19 +49,29 @@
       <el-table-column
         prop="id"
         label="id"
-        width="80">
+        width="40">
       </el-table-column>
 
       <el-table-column
         prop="org_id"
         label="org_id"
-        width="140">
+        width="70">
+      </el-table-column>
+
+      <el-table-column
+        prop="is_disable"
+        label="is_disable"
+        width="90">
+        <template slot-scope="scope">
+                <span v-if="scope.row.is_disable===0">Enable</span>
+                <span v-if="scope.row.is_disable===1">Disable</span>
+        </template>
       </el-table-column>
 
       <el-table-column
         prop="channel_name"
         label="channel_name"
-        width="140">
+        width="130">
       </el-table-column>
 
       <el-table-column
@@ -93,21 +103,28 @@
 
         <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" top="10vh" :close-on-click-modal="false" width="500px">
           <el-form :model="editInfo.parameter" ref="editInfo" style="width:100%;" >
-            <el-form-item label="channel_id" prop="channelId" label-width="100px"><br/>
+            <el-form-item label="channel_id" prop="channelId" label-width="150px">
               <el-input v-model="editInfo.parameter.channelId" ></el-input>
            </el-form-item>
-           <el-form-item label="channel_name" prop="channelName" label-width="100px"><br/>
+           <el-form-item label="channel_name" prop="channelName" label-width="150px">
               <el-input v-model="editInfo.parameter.channelName" ></el-input>
            </el-form-item>
-           <el-form-item label="channel_account" prop="channelAccount" label-width="100px"><br/>
+           <el-form-item label="channel_account" prop="channelAccount" label-width="150px">
             <el-input v-model="editInfo.parameter.channelAccount"></el-input>
             </el-form-item>
-          <el-form-item label="channel_access_key" prop="channelAccessKey" label-width="100px"><br/>
+          <el-form-item label="channel_access_key" prop="channelAccessKey" label-width="150px">
               <el-input v-model="editInfo.parameter.channelAccessKey"></el-input>
           </el-form-item>
-           <el-form-item label="channel_access_secret" prop="channelAccessSecret" label-width="100px"><br/>
+           <el-form-item label="channel_access_secret" prop="channelAccessSecret" label-width="150px">
              <el-input v-model="editInfo.parameter.channelAccessSecret"></el-input>
-          </el-form-item>
+          </el-form-item>           
+           <el-form-item label="channel_is_disable" prop="isdisable" label-width="150px">
+                   <el-switch
+                     v-model="editInfo.parameter.isdisable"
+                     :active-value="1"
+                     :inactive-value="0">
+                   </el-switch>
+           </el-form-item>
             </el-form>
           <div slot="footer" class="dialog-footer">
             <!--<el-button size="small" type="myPrimary" @click="testAdd('editInfo')">Test</el-button>
@@ -141,7 +158,8 @@ import store from '@/utils/store'
             channelName: '',
             channelAccount: '',
             channelAccessKey: '',
-            channelAccessSecret: ''
+            channelAccessSecret: '',
+            isdisable:''
           }
         },
       queryInfo: {
@@ -151,6 +169,24 @@ import store from '@/utils/store'
         parameter: {
           typeName: 'providerAction.list',
           userId: '234'
+        }
+      },
+      ableform: {
+        sessionId: '123',
+        version: '1.0',
+        osVersion: 'win8',
+        parameter: {
+          typeName: 'providerAction.enable',
+          channelId: ''
+        }
+      },      
+      disableform: {
+        sessionId: '123',
+        version: '1.0',
+        osVersion: 'win8',
+        parameter: {
+          typeName: 'providerAction.disable',
+          channelId: ''
         }
       },
       deleteInfo: {
@@ -165,27 +201,7 @@ import store from '@/utils/store'
       userChannels: [],
       dialogTitle: "",
       dialogVisible: false,
-      formData: {
-        Team: undefined,
-        Provider: undefined,
-        Name: undefined,
-      },
-      ProviderOptions: [{
-        "label": "Select",
-        "value": 1
-      }, {
-        "label": "AWS",
-        "value": 2
-      }, {
-        "label": "GCP",
-        "value": 3
-      }, {
-        "label": "Azure",
-        "value": 4
-      }, {
-        "label": "Alibaba",
-        "value": 5
-      }],
+
 
         state: store.state,
         isCollapse: false,
@@ -240,6 +256,9 @@ import store from '@/utils/store'
       this.editInfo.parameter.channelAccount=row.channel_account
       this.editInfo.parameter.channelAccessKey=row.channel_access_key
       this.editInfo.parameter.channelAccessSecret=row.channel_access_secret
+      this.ableform.parameter.channelId=row.id
+      this.disableform.parameter.channelId=row.id
+      this.editInfo.parameter.isdisable=row.is_disable
       this.dialogTitle = "修改云渠道";
       this.dialogVisible = true;        
       
@@ -247,19 +266,63 @@ import store from '@/utils/store'
     submitEdit(formName) {
       this.$refs[formName].validate((valid) => {
         if(valid) {
+          myPost("/providerAction/test", 
+          {
+          sessionId: '123',
+          version: '1.0',
+          osVersion: 'win8',
+          parameter: {
+            typeName: 'providerAction.test',
+            channelName: this.editInfo.parameter.channelName,
+            channelAccessKey: this.editInfo.parameter.channelAccessKey,
+            channelAccessSecret:this.editInfo.parameter.channelAccessSecret
+          }
+        })
+          .then(res => {
+          if (res.data.errorCode === '0000') {
           myPost("/providerAction/update" , this.editInfo).then(res =>{
             if (res.data.errorCode === '0000') {
-            this.$message.success('修改成功');
-            this.dialogVisible = false ;}
-            else{
+              if (this.editInfo.parameter.isdisable===0) 
+                 {myPost("/providerAction/enable" , this.ableform).then(res =>{
+                     if (res.data.errorCode === '0000' || res.data.errorCode === '2011') {
+                           this.$message.success('修改成功');
+                           this.getUserList();
+                           this.dialogVisible = false ;}
+                    else{
+                    this.$alert(res.data.errorMsg,'警告',{
+                     confirmButtonClass: "el-button--myPrimary",
+                     type: "warning"
+                    })}
+                   })
+                 }
+             else if(this.editInfo.parameter.isdisable===1) 
+                 {myPost("/providerAction/disable" , this.disableform).then(res =>{
+                     if (res.data.errorCode === '0000') {
+                           this.$message.success('修改成功');
+                           this.getUserList();
+                           this.dialogVisible = false ;}
+                    else{
+                    this.$alert(res.data.errorMsg,'警告',{
+                     confirmButtonClass: "el-button--myPrimary",
+                     type: "warning"
+                    })}
+                   })
+                 } 
+            }     
+          else{
             this.$alert(res.data.errorMsg,'警告',{
                 confirmButtonClass: "el-button--myPrimary",
                 type: "warning"
               })}
         })
-        }
-      })
-    },
+      }
+        else{
+            this.$alert(res.data.errorMsg,'警告',{
+                confirmButtonClass: "el-button--myPrimary",
+                type: "warning"
+              })}        
+      })}       
+    })},
     deleteClick(row){
       this.$confirm("确定要删除该云渠道么?", "提示", {
         confirmButtonClass: "el-button--myPrimary",
