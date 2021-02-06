@@ -2,11 +2,11 @@
   <div class="navmenu-container">
     <!--<img style="padding-left:15px;" v-if="state.isCollapse" src="@/assets/image/welcome.png" alt="" width="24px">
     <span v-else class="name-title">ParkMyCloud</span>-->
-    <span class="name-title">ParkMyCloud</span>
+    <span class="name-title">-----云酬-----</span>
     <el-menu :default-active="this.$route.path" class="el-menu-vertical-demo" :collapse="state.isCollapse" router :unique-opened="true">
       <el-menu-item index="/Resources">
         <svg-icon icon-class="notice"></svg-icon>
-        <span class="title-name">Resources</span>
+        <span class="title-name">云资源</span>
       </el-menu-item>
       <!--
       <el-menu-item index="/Scheduling">
@@ -20,7 +20,7 @@
       -->
       <el-menu-item index="/Cloud_Credentials">
         <svg-icon icon-class="cloud"></svg-icon>
-        <span class="title-name">Cloud Credentials</span>
+        <span class="title-name">云渠道</span>
       </el-menu-item>
       <!--
       <el-menu-item index="/Teams">
@@ -129,7 +129,7 @@ import store from '@/utils/store'
     display: inline-block;
     height: 60px;
     line-height: 70px;
-    padding: 0 20px;
+    padding: 10px 20px;
   }
 </style>
 

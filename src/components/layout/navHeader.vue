@@ -20,7 +20,7 @@
     <div class="account-list">
       <div>
         <el-dropdown>
-          <el-tooltip content="Open User Guide for this feature" effect="dark" placement="bottom">
+          <!--<el-tooltip content="Open User Guide for this feature" effect="dark" placement="bottom">
             <el-button
             type="text"
             icon="el-icon-question"
@@ -49,7 +49,7 @@
             </el-button>
           </el-tooltip>
         </el-dropdown>
-        <el-dropdown>
+        <el-dropdown>-->
           <div class="pic-container">
             <!-- <div class="avatar">              
             </div> -->
@@ -97,7 +97,7 @@ export default {
       passVisible: false,
       codeShow: true,
       restTime: 60,
-      nickname: '',
+      nickname: '退出',
       dialogVisible: false
     }
   },

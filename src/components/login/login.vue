@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <div class="top-part1"><h2 style="color:rgb(255, 255, 255)">ParkMyCloud</h2></div>
+    <div class="top-part1"><h2 style="color:rgb(255, 255, 255)">云酬</h2></div>
     <body>
     <div class="top-part2"><h3 style="color:rgb(255, 255, 255)" :sm="48" :lg="48">
       Sign In To My Account</h3></div>

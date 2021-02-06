@@ -18,17 +18,17 @@
       :data="instanceList"
       style="width: 100%">
 
-      <!--<el-table-column
+      <el-table-column
         prop="id"
         label="id"
-        width="50">
-      </el-table-column>-->
+        width="90">
+      </el-table-column>
 
-      <el-table-column
+      <!--<el-table-column
         prop="channelId"
         label="channelId"
         width="90">
-      </el-table-column>
+      </el-table-column>-->
 
       <el-table-column
         prop="region"
@@ -319,7 +319,10 @@ export default {
     showuse(row) {
       //this.instanceList.parameter.channelId=row.id
       this.$router.push({
-       path: '/showuse'
+       path: '/showuse',
+       query: {
+        id:row.id,
+     }
     })},
     showresource: function(row){
      this.$router.push({
