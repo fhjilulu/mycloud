@@ -125,11 +125,11 @@ export default {
                     fontSize: 16,
                     padding: [0, 0, 0, 20]
                 },
-                axisLine: {             //坐标轴轴线相关设置。
-                    lineStyle: {
-                        color: '#FA6F53',
-                    }
-                }
+                //axisLine: {             //坐标轴轴线相关设置。
+                //    lineStyle: {
+                //        color: '#FA6F53',
+                //    }
+                //}
             },
             yAxis: {
                 name: 'CPU utilization',
@@ -198,11 +198,11 @@ export default {
                     fontSize: 16,
                     padding: [0, 0, 0, 20]
                 },
-                axisLine: {             //坐标轴轴线相关设置。
-                    lineStyle: {
-                        color: '#FA6F53',
-                    }
-                }
+                //axisLine: {             //坐标轴轴线相关设置。
+                //    lineStyle: {
+                //        color: '#FA6F53',
+                //    }
+                //}
             },
             yAxis: {
                 name: 'Memory utilization',
@@ -280,6 +280,9 @@ export default {
             color: ['#8AE09F', '#FA6F53','#999'],       //设置区分（每条线是什么颜色，和 legend 一一对应）
             xAxis: {                //设置x轴
                 type: 'category',
+                axisLabel: {
+                 interval: 32
+                },
                 boundaryGap: false,     //坐标轴两边不留白
                 data: this.Obj.XData,
                 name: 'DATE',           //X轴 name
@@ -356,6 +359,9 @@ export default {
             color: ['#8AE09F', '#FA6F53','#999'],       //设置区分（每条线是什么颜色，和 legend 一一对应）
             xAxis: {                //设置x轴
                 type: 'category',
+                axisLabel: {
+                 interval: 32
+                },
                 boundaryGap: false,     //坐标轴两边不留白
                 data: this.Obj.XData1,
                 name: 'DATE',           //X轴 name
@@ -447,21 +453,21 @@ export default {
 							for (var i = 0; i < jsonObj.length; i++) {
                 //Math.round(new Date() / 1000)
                 var CrDate = new Date();
-                CrDate.setTime(jsonObj[i].timestamp);//其中data为需要被转化的linux时间戳 1490778706000
+                CrDate.setTime(jsonObj[jsonObj.length-i-1].timestamp);//其中data为需要被转化的linux时间戳 1490778706000
                 var createDate = CrDate.toLocaleString(); //被转换为标准的时间格式 2017/3/29 下午5:11:46
                 this.Obj.XData[i]=createDate;
                 //this.Obj.XData[i]=jsonObj[i].timestamp;
-                this.Obj.max[i]=jsonObj[i].maximum;
-                this.Obj.min[i]=jsonObj[i].minimum;
-                this.Obj.ave[i]=jsonObj[i].average;
+                this.Obj.max[i]=jsonObj[jsonObj.length-i-1].maximum;
+                this.Obj.min[i]=jsonObj[jsonObj.length-i-1].minimum;
+                this.Obj.ave[i]=jsonObj[jsonObj.length-i-1].average;
               };
               this.drawLine();
 						}
-            else{
-            this.$alert(res.data.errorMsg,'警告',{
-                confirmButtonClass: "el-button--myPrimary",
-                type: "warning"
-              })}
+           // else{
+           // this.$alert(res.data.errorMsg,'警告',{
+           //     confirmButtonClass: "el-button--myPrimary",
+           //     type: "warning"
+           //  })}
         })
         myPost("/metricAction/instanceMemory",{
         sessionId: '123',
@@ -481,13 +487,13 @@ export default {
 							for (var i = 0; i < jsonObj.length; i++) {
                 //Math.round(new Date() / 1000)
                 var CrDate = new Date();
-                CrDate.setTime(jsonObj[i].timestamp);//其中data为需要被转化的linux时间戳 1490778706000
+                CrDate.setTime(jsonObj[jsonObj.length-i-1].timestamp);//其中data为需要被转化的linux时间戳 1490778706000
                 var createDate = CrDate.toLocaleString(); //被转换为标准的时间格式 2017/3/29 下午5:11:46
                 this.Obj.XData1[i]=createDate;
                 //this.Obj.XData[i]=jsonObj[i].timestamp;
-                this.Obj.max1[i]=jsonObj[i].maximum;
-                this.Obj.min1[i]=jsonObj[i].minimum;
-                this.Obj.ave1[i]=jsonObj[i].average;
+                this.Obj.max1[i]=jsonObj[jsonObj.length-i-1].maximum;
+                this.Obj.min1[i]=jsonObj[jsonObj.length-i-1].minimum;
+                this.Obj.ave1[i]=jsonObj[jsonObj.length-i-1].average;
               };
               this.drawLine1();
 						}
