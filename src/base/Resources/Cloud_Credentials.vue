@@ -6,94 +6,95 @@
       <div class="form-container">
         <br/>
     <el-row :gutter="20">
-      <el-col :span="19">
+      <el-col :span="6">
           <div class="user-info-list">
             <h2 style="color: darkblue">Cloud Credentials</h2>
           </div>
       </el-col>
+      
+      <el-col :span="12" >
+      <el-form inline ref="SearchInfo" :model="SearchInfo" size="small">
+            <el-form-item label="模糊条件搜索">
+              <el-input v-model="SearchInfo.parameter.filter" placeholder="请输入" class="input"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="Primary" @click="getSearch()">查询</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="Cancel" @click="resetSearch()">重置</el-button>
+            </el-form-item>
+      </el-form>
+      </el-col>
+      
       <el-col :span="5" >
           <el-button type="primary" size="medium" @click="gotolink">Add Cloud Credentials</el-button>
       </el-col>
-      <!--
-      <el-col :span="6">
-          <el-select  v-model="formData.Provider" placeholder="Filter" clearable :style="{width: '100%'}">
-            <el-form  ref="filter" :model="formData" size="mini" label-width="100px">
-            <el-form-item label="Team" prop="Team">
-                <el-input v-model="formData.Team" clearable :style="{width: '90%'}"></el-input>
-            </el-form-item>
-            <el-form-item label="Provider" prop="Provider">
-                <el-select v-model="formData.Provider" placeholder="Select" clearable :style="{width: '90%'}">
-                  <el-option v-for="(item, index) in ProviderOptions" :key="index" :label="item.label"
-                  :value="item.value" :disabled="item.disabled"></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="Name" prop="Name">
-                <el-input v-model="formData.Name" clearable :style="{width: '90%'}"></el-input>
-            </el-form-item>
-           <el-option>
-           <el-form-item size="large">
-             <el-button type="primary" @click="submitForm">Search</el-button>
-             <el-button type="text" icon="el-icon-close" @click="resetForm">Close</el-button>
-           </el-form-item>
-           </el-option>
-         </el-form>
-     </el-select>
-      </el-col>-->
+
 
     </el-row>
     <br/>
    <el-table
       :data="userChannels"
       style="width: 100%" stripe>
-      <el-table-column label="#" type="index"></el-table-column>
+      <!--<el-table-column label="#" type="index"></el-table-column>-->
       <el-table-column
         prop="id"
         label="id"
         width="40">
       </el-table-column>
 
-      <el-table-column
-        prop="org_id"
-        label="org_id"
+      <!--<el-table-column
+        prop="orgId"
+        label="orgId"
         width="70">
-      </el-table-column>
+      </el-table-column>-->
 
       <el-table-column
-        prop="is_disable"
-        label="is_disable"
+        prop="isDisable"
+        label="isDisable"
         width="90">
         <template slot-scope="scope">
-                <span v-if="scope.row.is_disable===0">Enable</span>
-                <span v-if="scope.row.is_disable===1">Disable</span>
+                <span v-if="scope.row.isDisable===0">Enable</span>
+                <span v-if="scope.row.isDisable===1">Disable</span>
         </template>
       </el-table-column>
 
       <el-table-column
-        prop="channel_name"
-        label="channel_name"
-        width="130">
+        prop="channelName"
+        label="channelName"
+        width="120">
       </el-table-column>
 
       <el-table-column
-        prop="channel_account"
-        label="channel_account"
+        prop="channelAccount"
+        label="channelAccount"
+        width="140">
+      </el-table-column>
+
+      <el-table-column
+        prop="channelAccessKey"
+        label="channelAccessKey"
+        width="200">
+      </el-table-column>
+
+      <el-table-column
+        prop="channelAccessSecret"
+        label="channelAccessSecret"
+        width="200">
+      </el-table-column>
+
+      <el-table-column
+        prop="lastDiscovery"
+        label="最近更新时间"
         width="160">
+        <template slot-scope="scope">
+                  	{{ scope.row.lastDiscovery | formatDate }}
+        </template>
       </el-table-column>
 
-      <el-table-column
-        prop="channel_access_key"
-        label="channel_access_key"
-        width="220">
-      </el-table-column>
-
-      <el-table-column
-        prop="channel_access_secret"
-        label="channel_access_secret"
-        width="220">
-      </el-table-column>
-
-      <el-table-column align="center" label="操作" fixed="right" min-width="100px">
+      <el-table-column align="center" label="操作" fixed="right" min-width="120px">
               <template slot-scope="scope">
+                <el-button type="text" size="mini" class="color-blue" @click="update(scope.row)">更新</el-button>
                 <el-button type="text" size="mini" class="color-green" @click="editClick(scope.row)">修改</el-button>
                 <el-button type="text" size="mini" class="color-red" @click="deleteClick(scope.row)">删除</el-button>
               </template>
@@ -141,11 +142,29 @@
 </template>
 
 <script>
+
 /* 从菜单复制来的 加入路由跳转   */
 import { myGet,myPost,login } from "@/api/http";
 import store from '@/utils/store'
 
   export default {
+    filters: {
+        formatDate: function(value) {
+            let date = new Date(value);
+            let y = date.getFullYear();
+            let MM = date.getMonth() + 1;
+            MM = MM < 10 ? "0" + MM : MM;
+            let d = date.getDate();
+            d = d < 10 ? "0" + d : d;
+            let h = date.getHours();
+            h = h < 10 ? "0" + h : h;
+            let m = date.getMinutes();
+            m = m < 10 ? "0" + m : m;
+            let s = date.getSeconds();
+            s = s < 10 ? "0" + s : s;
+            return y + "-" + MM + "-" + d + " " + h + ":" + m + ":" + s;
+        }
+    },
     data() {
       return {
       editInfo: {
@@ -171,6 +190,15 @@ import store from '@/utils/store'
           userId: '234'
         }
       },
+      SearchInfo: {
+          sessionId: '123',
+          version: '1.0',
+          osVersion: 'win8',
+          parameter: {
+            typeName: 'providerAction.filter',
+            filter: ''
+          }
+        },
       ableform: {
         sessionId: '123',
         version: '1.0',
@@ -213,6 +241,23 @@ import store from '@/utils/store'
        this.isAble = true;
     },
     methods: {
+    resetSearch() {
+      this.searchForm = {...this.resetSearchForm}
+      this.getUserList()
+    },
+    async getSearch() {
+      const { data: res } =await myPost('/providerAction/filter', this.SearchInfo)
+      if(res.errorCode==="0000"){
+      this.page = 1;
+      this.userChannels = res.result.userChannels
+      this.$message.success('查询成功');}
+      else{
+        this.$alert(res.errorMsg,'警告',{
+                confirmButtonClass: "el-button--myPrimary",
+                type: "warning"
+              })
+              }
+    },
     goTarget(href) {
       window.open(href, "_blank");
     },
@@ -250,6 +295,19 @@ import store from '@/utils/store'
     gotolink(){
       this.$router.push("/Cloud_Credentials/add");
     },
+    async update(row) {
+      const { data: res } =await myPost('/providerAction/syncInstances', {
+          sessionId: '123',
+          version: '1.0',
+          osVersion: 'win8',
+          parameter: {
+            typeName: 'providerAction.syncInstances',
+            channelId: row.id
+          }
+    })
+    this.getUserList();
+    this.$message.success('更新成功');
+    },     
     editClick(row) {
       this.editInfo.parameter.channelId=row.id
       this.editInfo.parameter.channelName=row.channel_name
